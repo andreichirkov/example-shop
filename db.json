@@ -1,0 +1,107 @@
+{
+  "clothing": [
+    {
+      "brand": "Some Brand",
+      "name": "Футболка 1",
+      "image": "product-1.png",
+      "isDarkBackground": false,
+      "isSale": false,
+      "price": 354,
+      "article": "001",
+      "available": true,
+      "gender": "men",
+      "rootCategory": "clothing",
+      "rootCategoryId": 1,
+      "subCategory": "tees",
+      "timestamp": "1629667564",
+      "createTime": "23-08-2021",
+      "sizes": {
+        "s": "2",
+        "m": "3",
+        "l": "3"
+      }
+    },
+    {
+      "brand": "Some Brand",
+      "name": "Худи 2",
+      "image": "product-1.png",
+      "isDarkBackground": false,
+      "price": 225,
+      "isSale": false,
+      "article": "111",
+      "available": true,
+      "gender": "men",
+      "rootCategory": "clothing",
+      "rootCategoryId": 1,
+      "subCategory": "hoodies",
+      "timestamp": "1628715600",
+      "createTime": "12-08-2021",
+      "sizes": {
+        "s": "2",
+        "m": "3",
+        "l": "3"
+      }
+    },
+    {
+      "brand": "Some Brand",
+      "name": "Костюм ",
+      "image": "product-1.png",
+      "isDarkBackground": false,
+      "price": 1000,
+      "isSale": false,
+      "article": "777",
+      "available": true,
+      "gender": "men",
+      "rootCategory": "clothing",
+      "rootCategoryId": 1,
+      "subCategory": "suits",
+      "timestamp": "1628715600",
+      "createTime": "12-08-2021",
+      "sizes": {
+        "s": "2",
+        "m": "3",
+        "l": "3"
+      }
+    }
+
+  ],
+  "accessories": [
+    {
+      "brand": "Case Brand",
+      "name": "Чехол 1",
+      "image": "product-2.png",
+      "isDarkBackground": true,
+      "isSale": false,
+      "price": 838,
+      "article": "333",
+      "available": true,
+      "gender": "unisex",
+      "rootCategory": "accessories",
+      "rootCategoryId": 2,
+      "subCategory": "cases",
+      "timestamp": "1628715600",
+      "createTime": "12-08-2021",
+      "sizes": "one size"
+    },
+    {
+      "brand": "Case Brand",
+      "name": "Чехол со скидкой",
+      "image": "product-2.png",
+      "isDarkBackground": true,
+      "isSale": true,
+      "price": {
+        "oldPrice": 99,
+        "newPrice": 88
+      },
+      "article": "45",
+      "available": true,
+      "gender": "unisex",
+      "rootCategory": "accessories",
+      "rootCategoryId": 2,
+      "subCategory": "cases",
+      "timestamp": "1628715600",
+      "createTime": "12-08-2021",
+      "sizes": "one size"
+    }
+  ]
+}

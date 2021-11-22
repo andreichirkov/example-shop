@@ -1,0 +1,15 @@
+<template>
+  <svg width="10" height="17" viewBox="0 0 10 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1 1L9 8.5L1 16" stroke="#202020" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</template>
+
+<script>
+export default {
+  name: "arrowRight"
+}
+</script>
+
+<style scoped>
+
+</style>
