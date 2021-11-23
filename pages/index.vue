@@ -11,63 +11,18 @@
           <button><searchIcon /></button>
         </label>
         <div class="filters__right flex-between">
-          <div class="filters__right__wrap">
-            <button class="filters__right__btn flex-between" @click="isShowCategoryMenu = !isShowCategoryMenu">
-              <span>
-                {{ selectCategory === '' ? 'Категория' : returnText(selectCategory, 'categorySelect') }}
-              </span>
-              <caretDownIcon />
-            </button>
-            <div class="filters__right__wrap-sale__menu"
-                 v-if="isShowCategoryMenu"
-                 @mouseleave="isShowCategoryMenu = false">
-              <label class="filters__right__wrap-menu-single"
-                     v-for="category in categories"
-                     :key="category.id"
-                     @click="setFilterAndCloseAll">
-                {{ category.category }}
-                <input v-model="selectCategory" type="radio" :value="category.id" />
-              </label>
-            </div>
-          </div>
-          <div class="filters__right__wrap">
-            <button class="filters__right__btn flex-between" @click="isShowSortMenu = !isShowSortMenu">
-              <span>
-                {{ selectedPrice === '' ? 'По цене' : returnText(selectedPrice, 'priceSelect') }}
-              </span>
-              <caretDownIcon />
-            </button>
-            <div class="filters__right__wrap-sale__menu"
-                 v-if="isShowSortMenu"
-                 @mouseleave="isShowSortMenu = false">
-              <label class="filters__right__wrap-menu-single"
-                     v-for="price in prices"
-                     :key="price.id"
-                     @click="setFilterAndCloseAll">
-                {{ price.price }}
-                <input v-model="selectedPrice" type="radio" :value="price.id" />
-              </label>
-            </div>
-          </div>
-          <div class="filters__right__wrap">
-            <button class="filters__right__btn flex-between" @click="isShowSaleMenu = !isShowSaleMenu">
-              <span>
-                {{ selectedSale === '' ? 'По скидке' : returnText(selectedSale, 'saleSelect') }}
-              </span>
-              <caretDownIcon />
-            </button>
-            <div class="filters__right__wrap-sale__menu"
-                 v-if="isShowSaleMenu"
-                 @mouseleave="isShowSaleMenu = false">
-              <label class="filters__right__wrap-menu-single"
-                     v-for="sale in sales"
-                     :key="sale.id"
-                     @click="setFilterAndCloseAll">
-                  {{ sale.sale }}
-                <input v-model="selectedSale" type="radio" :value="sale.id" />
-              </label>
-            </div>
-          </div>
+          <productFilter :selectedStrOrNum="selectedCategory"
+                         :selectName="'categorySelect'"
+                         :filterOptions="categories"
+                         @setFilterAndCloseAll="setFilterAndClose" />
+          <productFilter :selectedStrOrNum="selectedPrice"
+                         :selectName="'priceSelect'"
+                         :filterOptions="prices"
+                         @setFilterAndCloseAll="setFilterAndClose" />
+          <productFilter :selectedStrOrNum="selectedSale"
+                         :selectName="'saleSelect'"
+                         :filterOptions="sales"
+                         @setFilterAndCloseAll="setFilterAndClose" />
         </div>
       </div>
       <div class="products">
@@ -76,10 +31,6 @@
         </ul>
         <p v-else>Позаданным параметрам товаров нет, успростите поиск</p>
       </div>
-<!--      <pre>{{basketTotalPriceGet}}</pre>-->
-<!--      <pre>basketState{{basketState}}</pre>-->
-<!--      <pre>productsState{{productsState}}</pre>-->
-<!--      <pre>cartItemsIds{{cartItemsIds}}</pre>-->
     </section>
   </div>
 </template>
@@ -92,6 +43,7 @@ export default {
   components: {
     productCard: () => import("~/components/productCard"),
     basket: () => import("~/components/basket"),
+    productFilter: () => import("~/components/productFilter"),
     caretDownIcon: () => import("~/components/svg/caretDownIcon"),
     searchIcon: () => import("~/components/svg/searchIcon"),
   },
@@ -99,29 +51,26 @@ export default {
     return {
       products: [],
 
-      isShowCategoryMenu: false,
-      isShowSortMenu: false,
-      isShowSaleMenu: false,
-
       search: '',
-      selectCategory: '',
-      selectedPrice: '',
-      selectedSale: '',
+
+      selectedCategory: '',// 1 -> Одежда
+      selectedPrice: '',// 1 -> Сначала дорогие
+      selectedSale: '',// 1 -> Со скидкой
 
       categories: [
-        { id: 0, category: 'Все категории' },
-        { id: 1, category: 'Одежда' },
-        { id: 2, category: 'Аксесуары' }
+        { id: 0, text: 'Все категории' },
+        { id: 1, text: 'Одежда' },
+        { id: 2, text: 'Аксесуары' }
       ],
       prices: [
-        { id: 0, price: 'По умолчанию' },
-        { id: 1, price: 'Сначала дорогие' },
-        { id: 2, price: 'Сначала дешевые' }
+        { id: 0, text: 'По умолчанию' },
+        { id: 1, text: 'Сначала дорогие' },
+        { id: 2, text: 'Сначала дешевые' }
       ],
       sales: [
-        { id: 0, sale: 'По умолчанию' },
-        { id: 1, sale: 'Со скидкой' },
-        { id: 2, sale: 'Без скидки' }
+        { id: 0, text: 'По умолчанию' },
+        { id: 1, text: 'Со скидкой' },
+        { id: 2, text: 'Без скидки' }
       ],
     }
   },
@@ -138,7 +87,7 @@ export default {
     filteredProducts() {
       let filtered = this.products
         // фильтр по категории
-        .filter(product => +this.selectCategory === 0 || product.rootCategoryId === +this.selectCategory)
+        .filter(product => +this.selectedCategory === 0 || product.rootCategoryId === +this.selectedCategory)
         // фильр инпуту поиска (вырезаны пробелы)
         .filter(product => {
           if (this.search === '') return product
@@ -176,27 +125,19 @@ export default {
     clearString(str) {
       return str.toLowerCase().replace(/\s/g, '')
     },
-    setFilterAndCloseAll() {
-      // значение из инпута будет
-      setTimeout(() => {
-        this.isShowCategoryMenu = false
-        this.isShowSortMenu = false
-        this.isShowSaleMenu = false
-      }, 0)
+    setFilterAndClose(e) {
+      if (e.name === 'categorySelect') this.selectedCategory = e.value
+      if (e.name === 'priceSelect') this.selectedPrice = e.value
+      if (e.name === 'saleSelect') this.selectedSale = e.value
     },
-    returnText(value, selectName) {
-      if (selectName === 'categorySelect') return this.categories.find(item => item.id === value).category
-      if (selectName === 'priceSelect') return this.prices.find(item => item.id === value).price
-      if (selectName === 'saleSelect') return this.sales.find(item => item.id === value).sale
-    }
   },
   async beforeMount() {
     const arr = JSON.parse(localStorage.getItem("localBasket"))
     if (arr) this.SET_BASKET_STATE_FROM_LOCALSTORAGE(arr)
 
     try {
-      let apiResClo = await this.$axios.get(`http://localhost:3000/clothing`)
-      let apiResAcs = await this.$axios.get(`http://localhost:3000/accessories`)
+      let apiResClo = await this.$axios.get(`${process.env.baseUrl}/clothing`)
+      let apiResAcs = await this.$axios.get(`${process.env.baseUrl}/accessories`)
       this.products = [ ...apiResClo.data, ...apiResAcs.data ]
     } catch (e) {
       console.warn(e)

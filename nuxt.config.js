@@ -26,9 +26,10 @@ export default {
   //   //обязательно подключить здесь для рабочих scss переменнных
   //   scss: ['~/assets/style/_mixins.scss', '~/assets/style/_skeleton_btn_buy.scss']
   // },
-  modules: [
-    '@nuxtjs/axios',
-  ],
+  modules: ['@nuxtjs/axios',],
   axios: {},
-  build: {}
+  build: {},
+  env: {
+    baseUrl: process.env.BASE_URL || 'http://localhost:3000'
+  }
 }
